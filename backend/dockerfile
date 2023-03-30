@@ -1,0 +1,12 @@
+FROM python:3.9
+
+COPY /app/requirements.txt requirements.txt
+
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \ 
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt-get update  
+RUN apt-get -y install google-chrome-stable
+COPY ./app .
+
+CMD ["uvicorn", "main:app","--host","0.0.0.0","--port","81"]
